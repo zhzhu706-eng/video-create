@@ -1,0 +1,11 @@
+{$SITE_DOMAIN} {
+  encode zstd gzip
+  reverse_proxy studio:3817 {
+    header_up X-Forwarded-For {remote_host}
+  }
+  header {
+    X-Content-Type-Options nosniff
+    Referrer-Policy strict-origin-when-cross-origin
+    X-Frame-Options DENY
+  }
+}

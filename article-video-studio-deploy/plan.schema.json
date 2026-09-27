@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "title": { "type": "string" },
+    "hook": { "type": "string" },
+    "narration": { "type": "string" },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "caption": { "type": "string" },
+          "visualPrompt": { "type": "string" },
+          "videoPrompt": { "type": "string" },
+          "duration": { "type": "number" },
+          "priority": { "type": "integer" }
+        },
+        "required": ["caption", "visualPrompt", "videoPrompt", "duration", "priority"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["title", "hook", "narration", "scenes"],
+  "additionalProperties": false
+}
