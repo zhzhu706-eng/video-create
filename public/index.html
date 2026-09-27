@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>文案成片工作台</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="authView" class="auth-view hidden"><div class="auth-card"><div class="eyebrow">ARTICLE → VIDEO</div><h1>开始制作你的短视频</h1><p>注册后可保存自己的项目。档案拼贴动画在服务器本地渲染，动态模型额度单独分配。</p><label class="field-label" for="authEmail">邮箱</label><input id="authEmail" type="email" autocomplete="email" placeholder="你的邮箱" /><label class="field-label" for="authPassword">密码</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="至少 10 位" /><label class="field-label" for="authInvite">注册邀请码</label><input id="authInvite" type="password" autocomplete="off" placeholder="登录时可以留空" /><div class="auth-actions"><button id="authLogin" class="button primary">登录</button><button id="authRegister" class="button ghost">注册</button></div><p id="authError" class="auth-error"></p></div></div>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">▣</div><div><strong>文案成片</strong><small>本地视频工作台</small></div></div>
+      <button id="newProject" class="button primary wide">＋ 新建视频</button>
+      <button id="openSettings" class="side-button">⚙ 模型与密钥设置</button>
+      <div class="sidebar-heading">最近项目</div>
+      <div id="projectList" class="project-list"></div>
+      <div class="sidebar-bottom"><span class="status-dot"></span> <span id="modeLabel">仅在你的电脑运行</span><br><span class="muted" id="accountLabel">所有付费调用默认关闭</span><button id="logout" class="side-button hidden">退出登录</button></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><div class="eyebrow">ARTICLE → VIDEO</div><h1>把好文案，做成好视频。</h1><p>粘贴文案后，本地拆稿；再按镜头决定是否使用 AI 插画或动态视频。</p></div>
+        <div class="top-pill">横竖屏可选 · 本地导出</div>
+      </header>
+
+      <section id="newView" class="new-layout">
+        <div class="panel composer">
+          <div class="panel-head"><span class="step">01</span><div><h2>粘贴你的文案</h2><p>公众号、小红书、口播稿都可以。无需模型即可生成可编辑初稿。</p></div></div>
+          <label class="field-label" for="title">项目名称</label>
+          <input id="title" placeholder="例如：为什么越努力越焦虑" />
+          <label class="field-label" for="article">原始文案</label>
+          <textarea id="article" rows="13" placeholder="把文章粘贴在这里。工作台会保留原文并在本地生成口语稿和分镜。"></textarea>
+          <div class="form-grid extended">
+            <div><label class="field-label" for="duration">目标时长</label><select id="duration"><option value="30">30 秒</option><option value="45">45 秒</option><option value="60">60 秒</option></select></div>
+            <div><label class="field-label" for="aspect">画面比例</label><select id="aspect"><option value="9:16">9:16 · 720×1280</option><option value="16:9">16:9 · 1280×720</option></select></div>
+            <div><label class="field-label" for="style">默认画面风格</label><select id="style"><option>复古档案拼贴动画</option><option>温暖手绘插画</option><option>卡通科普动画</option><option>生活方式摄影</option><option>极简信息图</option></select></div>
+            <div><label class="field-label" for="imageModel">配图模型</label><select id="imageModel"><option value="gpt-image-2.5-flare">GPT Image 2.5 Flare</option><option value="gpt-image-2.5-sunburst">GPT Image 2.5 Sunburst</option></select></div>
+            <div><label class="field-label" for="budget">全片动态视频预算</label><div class="money-input"><span>¥</span><input id="budget" type="number" min="0" max="10000" step="0.5" value="0" /></div></div>
+          </div>
+          <div class="composer-footer"><span>预算为 ¥0 时仍可完成图文运动版。</span><button id="createProject" class="button primary">创建工作流 →</button></div>
+        </div>
+        <div class="side-stack">
+          <div class="panel guide"><div class="guide-icon">✦</div><h3>先完成零成本粗剪</h3><p>本地拆稿、系统配音、文字图卡和 FFmpeg 合成都不调用付费接口。效果确认后，再单独升级需要动态画面的镜头。</p><div class="guide-steps"><span>文案</span><b>→</b><span>分镜</span><b>→</b><span>画面</span><b>→</b><span>旁白</span><b>→</b><span>成片</span></div></div>
+          <div class="panel connection"><h3>工具连接</h3><div class="connection-row"><span>Codex 账号</span><strong id="codexStatus">检查中…</strong></div><div class="connection-row"><span>本地渲染</span><strong id="renderStatus">检查中…</strong></div><div class="connection-row"><span>Hypit 工具</span><strong id="hypitStatus">检查中…</strong></div><div class="connection-row"><span>本地视频模型</span><strong id="localVideoStatus">检查中…</strong></div><button id="connectCodex" class="button ghost wide">连接现有 ChatGPT 账号</button><p class="subtle">Codex 用现有账号处理文案与配图。Hypit 不需要购买套餐。</p></div>
+        </div>
+      </section>
+
+      <section id="projectView" class="project-view hidden">
+        <div class="project-header"><div><div class="eyebrow">当前项目 <span id="projectId"></span></div><h2 id="projectTitle">视频项目</h2><p id="projectSummary">先编辑口语稿，再制作画面和声音。</p></div><div class="header-actions"><button id="deleteProject" class="button ghost">删除项目</button><button id="backToNew" class="button ghost">＋ 新建</button><button id="renderVideo" class="button primary">导出成片</button></div></div>
+        <div class="progress-strip"><div class="progress-item"><span>1</span> 文案与分镜</div><div class="progress-item"><span>2</span> 画面素材</div><div class="progress-item"><span>3</span> 旁白配音</div><div class="progress-item"><span>4</span> 预览导出</div></div>
+        <div id="taskBanner" class="task-banner hidden"></div>
+        <div class="workspace-grid">
+          <div class="workspace-main">
+            <div class="panel script-panel">
+              <div class="section-head"><div><div class="eyebrow">SCRIPT & STORYBOARD</div><h3>口语稿与分镜</h3></div><button id="aiPlan" class="button secondary">✦ 用 Codex 优化</button></div>
+              <p class="subtle" id="planSource"></p>
+              <label class="field-label" for="narration">视频旁白（可直接修改）</label><textarea id="narration" rows="6"></textarea>
+              <div class="section-footer"><span id="scriptLength" class="muted"></span><button id="savePlan" class="button ghost">保存文案和镜头设置</button></div>
+            </div>
+            <div class="section-head shots-head"><div><div class="eyebrow">VISUAL TIMELINE</div><h3>镜头与 B-roll</h3></div><button id="generateImages" class="button secondary">✦ 生成全部插画</button></div>
+            <div id="shotList" class="shot-list"></div>
+          </div>
+          <aside class="workspace-side">
+            <div class="panel budget-panel"><div class="eyebrow">SPENDING CONTROL</div><h3>费用控制</h3><div class="budget-big"><span id="spent">¥0.00</span><small>已提交的生成预算</small></div><div class="budget-track"><div id="budgetFill"></div></div><div class="budget-row"><span>全片上限</span><strong id="budgetLimit">¥0.00</strong></div><label class="field-label" for="projectBudget">调整全片预算上限</label><div class="budget-edit"><input id="projectBudget" type="number" min="0" max="10000" step="0.5" /><button id="saveBudget" class="button ghost">保存</button></div><label class="field-label" for="projectAspect">成片比例</label><select id="projectAspect"><option value="9:16">9:16 · 720×1280</option><option value="16:9">16:9 · 1280×720</option></select><div class="budget-row"><span>本地合成 / 系统配音</span><strong>¥0</strong></div><p class="subtle">每个镜头还有独立预算。超过镜头预算或全片预算时，后台会拒绝调用。</p></div>
+            <div class="panel audio-panel"><div class="eyebrow">VOICE</div><h3>旁白</h3><p>使用 Windows 中文语音，或上传自己的 WAV。生成后会按真实音频长度调整镜头。</p><button id="generateVoice" class="button secondary wide">生成中文旁白 · ¥0</button><label class="button ghost wide upload-label">上传自己的 WAV<input id="voiceUpload" type="file" accept="audio/wav,.wav" hidden /></label><audio id="audioPreview" controls class="hidden"></audio></div>
+            <div class="panel output-panel"><div class="eyebrow">EXPORT</div><h3>成片预览</h3><div id="emptyPreview" class="empty-preview">画面与旁白准备好后<br>点击「导出成片」</div><video id="videoPreview" controls playsinline class="hidden"></video><a id="downloadVideo" class="button primary wide hidden" download="article-video.mp4">下载 MP4</a><p id="outputSpec" class="subtle">720×1280 · H.264 MP4 · AAC 音频</p></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="paidDialog"><form method="dialog" class="dialog-body"><div class="eyebrow">OPTIONAL VIDEO GENERATION</div><h3>生成动态 B-roll</h3><label class="field-label" for="videoModel">视频模型</label><select id="videoModel"></select><p id="paidDetails"></p><p id="paidNote" class="subtle"></p><label id="apiKeyLabel" class="field-label" for="providerKey">API Key</label><input id="providerKey" type="password" autocomplete="off" placeholder="留空时使用已保存的密钥" /><label id="rememberWrap" class="check-row"><input id="rememberKey" type="checkbox" /> 加密后永久保存在本机</label><div class="dialog-actions"><button value="cancel" class="button ghost">取消</button><button id="confirmPaid" value="confirm" class="button primary">确认预算并生成</button></div></form></dialog>
+
+  <dialog id="settingsDialog"><form method="dialog" class="dialog-body settings-body"><div class="eyebrow">LOCAL SETTINGS</div><h3>模型与密钥</h3><p>密钥使用随机本机密钥加密，密钥文件仅允许当前 Windows 账号访问。页面只显示是否已保存，不读取密钥明文。</p><label class="field-label" for="defaultImageModel">默认配图模型</label><select id="defaultImageModel"><option value="gpt-image-2.5-flare">GPT Image 2.5 Flare</option><option value="gpt-image-2.5-sunburst">GPT Image 2.5 Sunburst</option></select><label class="field-label" for="minimaxKey">MiniMax API Key</label><input id="minimaxKey" type="password" autocomplete="off" placeholder="未保存" /><label class="field-label" for="replicateKey">Replicate API Token</label><input id="replicateKey" type="password" autocomplete="off" placeholder="未保存" /><label class="field-label" for="falKey">fal API Key</label><input id="falKey" type="password" autocomplete="off" placeholder="未保存" /><p class="subtle">输入新值才会覆盖原密钥。动态视频模型会在每次提交前显示人民币估价。</p><div class="dialog-actions"><button value="cancel" class="button ghost">取消</button><button id="saveSettings" value="save" class="button primary">保存设置</button></div></form></dialog>
+
+  <div id="toast" class="toast hidden"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+services:
+  studio:
+    build: .
+    restart: unless-stopped
+    environment:
+      PUBLIC_MODE: "1"
+      DATA_ROOT: /data
+      HOST: 0.0.0.0
+      PORT: "3817"
+      COOKIE_SECURE: "1"
+      TRUST_PROXY: "1"
+      REGISTRATION_CODE: ${REGISTRATION_CODE:?Set REGISTRATION_CODE in .env}
+      FRAMEPACK_URL: ${FRAMEPACK_URL:-http://127.0.0.1:7860}
+    volumes:
+      - studio_data:/data
+    expose:
+      - "3817"
+    mem_limit: 4g
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      studio:
+        condition: service_started
+volumes:
+  studio_data:
+  caddy_data:
+  caddy_config:

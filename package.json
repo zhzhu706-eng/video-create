@@ -1,0 +1,16 @@
+{
+  "name": "article-video-studio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/public-mode.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@gradio/client": "^2.0.0",
+    "sharp": "^0.34.0"
+  }
+}
